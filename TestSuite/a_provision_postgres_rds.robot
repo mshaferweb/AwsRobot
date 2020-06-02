@@ -1,6 +1,5 @@
-# pip install --upgrade robotframework-sshlibrary
-# pip install --upgrade robotframework-scplibrary
 *** Settings ***
+Documentation     Provisions new postgres rds db and runs db setup scripts.
 Library    OperatingSystem
 Library    ../library/RDSLibrary.py
 Library    ../library/ImportBooks.py
@@ -10,6 +9,7 @@ ${instance_name}  hello2
 
 *** Test Cases ***
 Provision New Postgres RDS Instance
+    [Documentation]    Create new RDS instance w
     ${output}=   RDSLibrary.create  ${instance_name}
     Log To Console    "Created ${output}"
 
