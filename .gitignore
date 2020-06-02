@@ -1,4 +1,4 @@
-scripts
+scripts/start_flask.sh
 .idea
 lsp
 results
