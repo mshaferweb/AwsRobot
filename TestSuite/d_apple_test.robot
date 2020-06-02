@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation   Here's what the test is going on
+Documentation   Robot Framework Demo with Browserstack
 Resource  ../resources/AppleApp.robot
 Resource  ../resources/CommonWeb.robot
 

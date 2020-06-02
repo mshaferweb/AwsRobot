@@ -15,13 +15,14 @@ ${USERNAME}    ubuntu
 
 *** Test Cases ***
 CLone Flask Book Review Repo
+    [Documentation]  Clone Book Review Repo on EC2 Flask host
     ${output}=   Execute Command  echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
     Log To Console    "Git output ${output}"
     ${output}=   Execute Command  git clone git@github.com:mshaferweb/FlaskBookReview.git  forward_agent=True
     Log To Console    "Git output ${output}"
 
 Install Python Requirement
-    [Documentation]  Install python require
+    [Documentation]  Install python requirements on EC2 Flask host
     Log To console  "Installing python requirements"
 
     ${output}=   Execute Command  apt update  sudo=True
@@ -52,14 +53,14 @@ Open Connection And Log In
     SSHLibrary.Open Connection    ${HOST}
     # Sleep required for SSH to be ready
     sleep  20
-    SSHLibrary.Login With Public Key    ${USERNAME}    /var/lib/jenkins/.aws/aws.pem    password=    allow_agent=False    look_for_keys=False    delay=10 seconds    proxy_cmd=
+    SSHLibrary.Login With Public Key    ${USERNAME}    /home/micshafe/.ssh/aws.pem    password=    allow_agent=False    look_for_keys=False    delay=10 seconds    proxy_cmd=
 
 Copy Key to Known Hosts
-    ${result} =    Run Process    ssh-keyscan -H ${HOST} > known_hosts    shell=True    cwd=/var/lib/jenkins/.ssh
+    ${result} =    Run Process    ssh-keyscan -H ${HOST} > known_hosts    shell=True    cwd=/home/micshafe/.ssh
     Log To Console    "Copy key: ${result}"
 
 Copy Flask StartUp Script to EC2
-    SCPLibrary.Open Connection   ${HOST}  port=22  username=${USERNAME}    password=None  key_filename=/var/lib/jenkins/.aws/aws.pem
+    SCPLibrary.Open Connection   ${HOST}  port=22  username=${USERNAME}    password=None  key_filename=/home/micshafe/.ssh/aws.pem
     SCPLibrary.Put File          scripts/start_flask.sh       /home/ubuntu/
     SCPLibrary.Close Connection
     Execute Command  chmod 777 start_flask.sh

@@ -5,11 +5,11 @@ Library    ../library/RDSLibrary.py
 Library    ../library/ImportBooks.py
 
 *** Variables ***
-${instance_name}  hello2
+${instance_name}  hello3
 
 *** Test Cases ***
 Provision New Postgres RDS Instance
-    [Documentation]    Create new RDS instance w
+    [Documentation]    Create new RDS instance
     ${output}=   RDSLibrary.create  ${instance_name}
     Log To Console    "Created ${output}"
 
@@ -24,6 +24,7 @@ Provision New Postgres RDS Instance
     Log To Console    "postgres URL ${postgres_url}"
 
 Setup Books Request Table
+    [Documentation]    Setup tables and import books
     ${output}=  ImportBooks.drop tables   ${postgres_url}
     Append To File  scripts/start_flask    ${output}
 
@@ -34,6 +35,7 @@ Setup Books Request Table
     Log To Console    ${output}
 
 Add DB Url to start_flask script
+    [Documentation]    Get DB URL and create flask startup script
     Remove File     scripts/start_flask.sh
     Append To File  scripts/start_flask.sh  export DATABASE_URL=${postgres_url}\n
     Append To File  scripts/start_flask.sh  export FLASK_ENV=development\n

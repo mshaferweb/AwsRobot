@@ -1,2 +1,4 @@
+boto3
+robotframework-seleniumlibrary
 robotframework-sshlibrary
 robotframework-scplibrary
