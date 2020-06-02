@@ -55,7 +55,7 @@ Open Connection And Log In
     SSHLibrary.Login With Public Key    ${USERNAME}    /var/lib/jenkin/.aws/aws.pem    password=    allow_agent=False    look_for_keys=False    delay=10 seconds    proxy_cmd=
 
 Copy Key to Known Hosts
-    ${result} =    Run Process    ssh-keyscan -H ${HOST} > known_hosts    shell=True    cwd=//var/lib/jenkin/.ssh
+    ${result} =    Run Process    ssh-keyscan -H ${HOST} > known_hosts    shell=True    cwd=/var/lib/jenkin/.ssh
     Log To Console    "Copy key: ${result}"
 
 Copy Flask StartUp Script to EC2
