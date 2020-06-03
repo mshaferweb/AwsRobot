@@ -144,8 +144,6 @@ class RDSLibrary:
             error
         return False
 
-
-
     def wait_for_instance_to_be_running(self,instance_identifier,tries=50):
         instance_running = False
         print("Starting at: ", time.localtime())
@@ -158,18 +156,11 @@ class RDSLibrary:
             tries -= 1
             print("Waiting for :", instance_identifier,"Tries :",tries)
 
-# rds = RDSLibrary()
+#rds = RDSLibrary()
 # # rds.list()
 # print(rds.build_postgres_url('hello4'))
 # # rds.create_snapshot('hello4','hello4-snapshot1')
 # rds.restore_snapshot('hello5','hello4-snapshot')
 # #rds.modify_instance_name('hello5','hello4')
-# rds.delete("hello3")
-# rds.delete("hello4")
-
-# rds.create("hello3")
-# rds.wait_for_instance_to_be_running("hello3")
-#
-# # rds.delete("hello")
-# print("done")
+#rds.delete("robotdemo2")
 

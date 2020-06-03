@@ -11,7 +11,7 @@ class EC2Library:
         self.ec2_resource = ec2_resource
         self.ec2_client = ec2_client
 
-        # create a new EC2 instance
+    # create a new EC2 instance
     def create_instance(self):
         instances = self.ec2_resource.create_instances(
              ImageId='ami-0e84e211558a022c0',
@@ -23,10 +23,6 @@ class EC2Library:
         return instances[0].id
 
     def start_stop_instance(self,instance_id,action):
-        # import sys
-
-        # instance_id = sys.argv[2]
-        # action = sys.argv[1].upper()
 
         if action == 'ON':
             # Do a dryrun first to verify permissions

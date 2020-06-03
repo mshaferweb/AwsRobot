@@ -5,7 +5,7 @@ Library    ../library/RDSLibrary.py
 Library    ../library/ImportBooks.py
 
 *** Variables ***
-${instance_name}  hello3
+${instance_name}  robotdemo
 
 *** Test Cases ***
 Provision New Postgres RDS Instance

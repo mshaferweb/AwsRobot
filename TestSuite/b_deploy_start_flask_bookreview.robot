@@ -1,5 +1,3 @@
-# pip install --upgrade robotframework-sshlibrary
-# pip install --upgrade robotframework-scplibrary
 *** Settings ***
 Library    SSHLibrary
 Library    SCPLibrary
