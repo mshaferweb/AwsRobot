@@ -1,16 +1,40 @@
-## Robot Framework Demo
-#### Create Postgresql RDS instance using boto3 python lib
-#### Run SQL setup for RDS instance using sql alchemy python lib
-#### Spin up EC2 instance using boto3 lib
-#### Configure Flask application using Robot SSHLibrary and SCPLibrary
-#### Run Robot UI test for book review flask application
-#### Run UI from Browserstack add Iphone11 to cart on Apple
+# Robot Framework Demo
 
-Install Requirements:
+### Demonstrates RobotFramework, Python Library and AWS coordination
 
-`sudo pip3 install -r requirements.txt`
+- TS (a) Create Postgresql RDS instance 
+  - python boto3 RDS lib
+- TS (b) Deploy Flask application
+  - python3 boto3 EC2 lib
+  - RobotFramework SSHLibrary and SCPLibrary
+- TS (c) Create Snapshot
+  - python boto3 RDS lib
+- TS (d) Execute book review UI test
+  - RobotFramework SeleniumLibrary RequestsLibrary
+- TS (e) UI test Apple.com 
+  - Browserstack configurable with ${REMOTE_URL} in resource/CommonWeb.robot
+- TS (f)  Restore RDS Snapshot
+  - python boto3 RDS lib
+- TS (g)  Cleanup AWS resources
 
-Run Suite
 
-`robot -d results -L debug --variable instance_name:robotdemo TestSuite/ 
-`
+Create AWS config and credentials file in ~/.aws
+> config
+```
+[default]
+region = us-east-2
+```
+> credentials
+```[default]
+aws_access_key_id = <>
+aws_secret_access_key = <>
+```
+
+Install Python Requirements:
+> sudo apt-get install python3-pip
+> sudo pip3 install -r requirements.txt
+
+Run Suite:
+
+> robot -d results -L debug --variable instance_name:robotdemo TestSuite/ 
+

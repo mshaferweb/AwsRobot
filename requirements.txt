@@ -1,4 +1,7 @@
 boto3
+sqlalchemy
+robotframework
+robotframework-requests
 robotframework-seleniumlibrary
 robotframework-sshlibrary
 robotframework-scplibrary
