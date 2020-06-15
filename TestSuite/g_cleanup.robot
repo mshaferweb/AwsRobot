@@ -4,7 +4,6 @@ Library    ../library/RDSLibrary.py
 Library    ../library/EC2Library.py
 
 *** Variables ***
-${instance_name}  hello5
 
 *** Test Cases ***
 Stop All RDS Instances
@@ -13,6 +12,15 @@ Stop All RDS Instances
 
     FOR    ${i}  IN  @{instances}
         RDSLibrary.delete  ${i}
+        Log To Console  Deleted DB ${i}
+    END
+
+Delete All RDS Snapshots
+    ${snapshots}=   RDSLibrary.list_snapshots
+    Log To Console    "Deleting snapshots: ${snapshots}"
+
+    FOR    ${i}  IN  @{snapshots}
+        RDSLibrary.delete_snapshot  ${i}
         Log To Console  Deleted DB ${i}
     END
 

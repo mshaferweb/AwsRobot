@@ -2,7 +2,7 @@ import boto3
 import time
 
 class RDSLibrary:
-
+    response = ""
     def __init__(self):
         self.rds = boto3.client('rds')
         self.DBName = 'books'
@@ -68,6 +68,16 @@ class RDSLibrary:
             print("Got exception: ", error)
             error
 
+    def delete_snapshot(self,DBSnapshotIdentifier):
+        try:
+            response = self.rds.delete_db_snapshot(
+                DBSnapshotIdentifier=DBSnapshotIdentifier)
+            print(response)
+            print("Deleting ", response["DBSnapshot"]["DBSnapshotIdentifier"])
+        except Exception as error:
+            print("Got exception: ", error)
+            error
+
     def start(self,instance_identifier,tries=25):
         if self.check_if_instance_is_running(instance_identifier):
             return True
@@ -116,6 +126,18 @@ class RDSLibrary:
             print("Got exception: ", error)
             return error
 
+    def list_snapshots(self):
+        snapshot_list = []
+        try:
+            response = self.rds.describe_db_snapshots()
+            for snapshot in response["DBSnapshots"]:
+                snapshot_list.append(snapshot['DBSnapshotIdentifier'])
+            print (snapshot_list)
+            return snapshot_list
+        except Exception as error:
+            print("Got exception: ", error)
+            return error
+
 
     def check_if_instance_is_running(self,instance_identifier):
         try:
@@ -127,6 +149,22 @@ class RDSLibrary:
         for instance in response["DBInstances"]:
             if instance['DBInstanceIdentifier'] == instance_identifier:
                 if instance['DBInstanceStatus'] == 'available':
+                    return True
+        return False
+
+
+    def check_if_snapshot_is_available(self,snapshot_name):
+        try:
+            response = self.rds.describe_db_snapshots(
+                DBSnapshotIdentifier=snapshot_name
+            )
+            print(response)
+        except Exception as error:
+            print("Got exception: ", error)
+            error
+        for snapshot in response["DBSnapshots"]:
+            if snapshot['DBSnapshotIdentifier'] == snapshot_name:
+                if snapshot['Status'] == 'available':
                     return True
         return False
 
@@ -156,11 +194,29 @@ class RDSLibrary:
             tries -= 1
             print("Waiting for :", instance_identifier,"Tries :",tries)
 
-#rds = RDSLibrary()
-# # rds.list()
-# print(rds.build_postgres_url('hello4'))
-# # rds.create_snapshot('hello4','hello4-snapshot1')
-# rds.restore_snapshot('hello5','hello4-snapshot')
-# #rds.modify_instance_name('hello5','hello4')
-#rds.delete("robotdemo2")
 
+    def wait_for_snapshot_to_be_available(self,snapshot_name,tries=50):
+        instance_running = False
+        print("Starting at: ", time.localtime())
+
+        while tries > 0 and not instance_running:
+            if self.check_if_snapshot_is_available(snapshot_name):
+                print("Available at: ",time.localtime())
+                return ("Available at: ",time.localtime())
+            time.sleep(30)
+            tries -= 1
+            print("Waiting for :", snapshot_name,"Tries :",tries)
+
+
+def main():
+    rds = RDSLibrary()
+    rds.list_snapshots()
+# rds.create_snapshot('robotdemo1','robotdemo1-snapshot')
+# # print(rds.build_postgres_url('hello4'))
+# rds.wait_for_snapshot_to_be_available('robotdemo1-snapshot1')
+# # rds.restore_snapshot('robotdemo1restored','robotdemo1-snapshot')
+# # rds.modify_instance_name('hello5','hello4')
+# # rds.delete("robotdemo1")
+
+if __name__ == '__main__':
+    main()

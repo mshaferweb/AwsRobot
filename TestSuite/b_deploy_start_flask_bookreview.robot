@@ -64,7 +64,6 @@ Copy Flask StartUp Script to EC2
     Execute Command  chmod 777 start_flask.sh
 
 Close All Connections and Stop Ec2
-#    ${output}=  EC2Library.stop running instances
     Log To Console    "Start Flask at ${HOST}:5000"
     Log To Console    "Stopped connections"
     #Close All Connections
