@@ -4,12 +4,15 @@ Library    SCPLibrary
 Library    Process
 Library    Collections
 Library    ../library/EC2Library.py
+Library    ../library/pyrequests.py
+
 Suite Setup    Open Connection And Log In
 Suite Teardown    Close All Connections and Stop Ec2
 
 *** Variables ***
 ${USERNAME}    ubuntu
-# ${instance_id}    i-00fadeebaa6191d4e
+${AWS_PEM_PATH}  /home/ubuntu/.ssh/aws.pem
+${instance_id}    i-0f1d884cd26a36745
 
 *** Test Cases ***
 CLone Flask Book Review Repo
@@ -38,6 +41,11 @@ Start Flask Server
     SSHLibrary.Start Command     nohup ./start_flask.sh > myout.file 2>&1
     Log To Console    "Started Flask"
 
+Wait for Connection to be Live
+
+   pyrequests.httprequest_check_200  http://${HOST}:5000
+
+
 *** Keywords ***
 
 Open Connection And Log In
@@ -50,15 +58,15 @@ Open Connection And Log In
     Copy Key to Known Hosts
     SSHLibrary.Open Connection    ${HOST}
     # Sleep required for SSH to be ready
-    sleep  20
-    SSHLibrary.Login With Public Key    ${USERNAME}    /home/micshafe/.ssh/aws.pem    password=    allow_agent=False    look_for_keys=False    delay=10 seconds    proxy_cmd=
+    Builtin.sleep  20
+    SSHLibrary.Login With Public Key    ${USERNAME}    ${AWS_PEM_PATH}    password=    allow_agent=False    look_for_keys=False    delay=10 seconds    proxy_cmd=
 
 Copy Key to Known Hosts
-    ${result} =    Run Process    ssh-keyscan -H ${HOST} > known_hosts    shell=True    cwd=/home/micshafe/.ssh
+    ${result}=    Run Process    ssh-keyscan -H ${HOST} > known_hosts    shell=True    cwd=%{HOME}/.ssh
     Log To Console    "Copy key: ${result}"
 
 Copy Flask StartUp Script to EC2
-    SCPLibrary.Open Connection   ${HOST}  port=22  username=${USERNAME}    password=None  key_filename=/home/micshafe/.ssh/aws.pem
+    SCPLibrary.Open Connection   ${HOST}  port=22  username=${USERNAME}    password=None  key_filename=${AWS_PEM_PATH}
     SCPLibrary.Put File          scripts/start_flask.sh       /home/ubuntu/
     SCPLibrary.Close Connection
     Execute Command  chmod 777 start_flask.sh

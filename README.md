@@ -18,6 +18,8 @@
 - TS (g)  Cleanup AWS resources
 
 
+### Setup
+
 Create AWS config and credentials file in ~/.aws
 > config
 ```

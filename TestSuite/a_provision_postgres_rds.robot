@@ -26,7 +26,7 @@ Provision New Postgres RDS Instance
 Setup Books Request Table
     [Documentation]    Setup tables and import books
     ${output}=  ImportBooks.drop tables   ${postgres_url}
-    Append To File  scripts/start_flask    ${output}
+    Log To Console    ${output}
 
     ${output}=  ImportBooks.create tables   ${postgres_url}
     Log To Console    ${output}
