@@ -19,7 +19,7 @@ CLone Flask Book Review Repo
     [Documentation]  Clone Book Review Repo on EC2 Flask host
     ${output}=   Execute Command  echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
     Log To Console    "Git output ${output}"
-    ${output}=   Execute Command  git clone git@github.com:mshaferweb/FlaskBookReview.git  forward_agent=True
+    ${output}=   Execute Command  git clone https://github.com/mshaferweb/AwsRobot.git
     Log To Console    "Git output ${output}"
 
 Install Python Requirement
