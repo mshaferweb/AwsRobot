@@ -21,7 +21,6 @@ Begin Web Test
     #maximize browser window
 
 End Web Test
-    #log  hello
     Close all browsers
 
 

@@ -2,6 +2,7 @@ import time
 import boto3
 from botocore.exceptions import ClientError
 
+
 class EC2Library:
 
     def __init__(self):
@@ -13,15 +14,15 @@ class EC2Library:
     # create a new EC2 instance
     def create_instance(self):
         instances = self.ec2_resource.create_instances(
-             ImageId='ami-0e84e211558a022c0',
-             KeyName='aws',
-             MinCount=1,
-             MaxCount=1,
-             InstanceType='t2.micro',
-         )
+            ImageId='ami-0e84e211558a022c0',
+            KeyName='aws',
+            MinCount=1,
+            MaxCount=1,
+            InstanceType='t2.micro',
+        )
         return instances[0].id
 
-    def start_stop_instance(self,instance_id,action):
+    def start_stop_instance(self, instance_id, action):
 
         if action == 'ON':
             # Do a dryrun first to verify permissions
@@ -74,24 +75,22 @@ class EC2Library:
                     running.append(instance['InstanceId'])
         return running
 
-    def find_running_instance_public_ip(self,instance_id):
-        public_ips = []
+    def find_running_instance_public_ip(self, instance_id):
         response = self.ec2_client.describe_instances()
         for region in response['Reservations']:
             for instance in region['Instances']:
                 if instance['InstanceId'] == instance_id:
                     if instance['State']['Name'] == 'running':
                         return instance['PublicDnsName']
-        else:
-            return None
+        return None
 
     def stop_running_instances(self):
         running = self.find_running_instances()
         for key in running:
             self.start_stop_instance(key, "OFF")
-            print("stopping ",key)
+            print("stopping ", key)
 
-    def check_if_instance_is_running(self,instance_identifier):
+    def check_if_instance_is_running(self, instance_identifier):
         try:
             response = self.ec2_client.describe_instances()
             print(response)
@@ -108,17 +107,18 @@ class EC2Library:
                     pass
         return False
 
-    def wait_for_instance_to_be_running(self,instance_identifier,tries=60):
+    def wait_for_instance_to_be_running(self, instance_identifier, tries=60):
         print("Starting at: ", time.localtime())
 
         while tries > 0:
             if self.check_if_instance_is_running(instance_identifier):
-                print("Running at: ",time.localtime())
+                print("Running at: ", time.localtime())
                 return True
             time.sleep(10)
             tries -= 1
-            print("Waiting for :", instance_identifier,"Tries :",tries)
+            print("Waiting for :", instance_identifier, "Tries :", tries)
         return False
+
 
 def main():
     ec2 = EC2Library()
@@ -128,7 +128,7 @@ def main():
     # instance_id = ec2.create_instance()
     # ec2.wait_for_instance_to_be_running(instance_id)
 
-    #ec2.find_running_instances()
+    # ec2.find_running_instances()
     # # ec2.start_stop_instance('i-0aec9a710c29605b9','ON')
     # print(ec2.find_running_instances_public_ip())
 
@@ -136,6 +136,7 @@ def main():
     # response2 = ec2_client.create_key_pair(KeyName='KEY_PAIR_NAME2')
     # print(response1)
     # stop_running_instances(ec2_client)
+
 
 if __name__ == '__main__':
     main()
