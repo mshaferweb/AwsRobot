@@ -60,6 +60,8 @@ class ImportBooks:
         print("done")
 
     def load_books(self,url):
+        import concurrent.futures
+
         self.setup_engine(url)
 
         # isbn,title,author,year
@@ -68,6 +70,9 @@ class ImportBooks:
         for isbn, title, author, year in reader:
             if isbn.__eq__('isbn'):
                 continue
+
+            with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+                executor.map(thread_function, range(3))
             self.db.execute("INSERT INTO books (isbn, title, author, year) VALUES (:isbn, :title, :author, :year)",
                         {"isbn": isbn, "title": title, "author": author, "year": year})
             print(f"Added Book: {isbn}  {title}")

@@ -1,8 +1,10 @@
 import boto3
 import time
 
+
 class RDSLibrary:
     response = ""
+
     def __init__(self):
         self.rds = boto3.client('rds')
         self.DBName = 'books'
@@ -11,13 +13,13 @@ class RDSLibrary:
         self.DBInstanceClass = 'db.t2.micro'
         self.Engine = 'postgres'
 
-    def build_postgres_url(self,instance_identifier):
+    def build_postgres_url(self, instance_identifier):
         # postgresql://dbadmin:abcdefg123456789@hello4.cqa6jc4nxqdn.us-east-2.rds.amazonaws.com/books
         hostname = self.get_public_host_address(instance_identifier)
-        url = "postgresql://" + self.MasterUsername + ":"  + self.MasterUserPassword + "@" + hostname + "/" + self.DBName
+        url = "postgresql://" + self.MasterUsername + ":" + self.MasterUserPassword + "@" + hostname + "/" + self.DBName
         return url
 
-    def create(self,instance_identifier):
+    def create(self, instance_identifier):
         try:
             response = self.rds.create_db_instance(
                 DBName=self.DBName,
@@ -56,7 +58,7 @@ class RDSLibrary:
             print("Got exception: ", error)
             error
 
-    def delete(self,instance_identifier):
+    def delete(self, instance_identifier):
         try:
             response = self.rds.delete_db_instance(
                 DBInstanceIdentifier=instance_identifier,
@@ -68,7 +70,7 @@ class RDSLibrary:
             print("Got exception: ", error)
             error
 
-    def delete_snapshot(self,DBSnapshotIdentifier):
+    def delete_snapshot(self, DBSnapshotIdentifier):
         try:
             response = self.rds.delete_db_snapshot(
                 DBSnapshotIdentifier=DBSnapshotIdentifier)
@@ -78,7 +80,7 @@ class RDSLibrary:
             print("Got exception: ", error)
             error
 
-    def start(self,instance_identifier,tries=25):
+    def start(self, instance_identifier, tries=25):
         if self.check_if_instance_is_running(instance_identifier):
             return True
         else:
@@ -91,7 +93,7 @@ class RDSLibrary:
                 error
         return self.wait_for_instance_to_be_running(instance_identifier)
 
-    def stop(self,instance_identifier):
+    def stop(self, instance_identifier):
         if not self.check_if_instance_is_running(instance_identifier):
             return True
         else:
@@ -104,7 +106,7 @@ class RDSLibrary:
                 error
         return True
 
-    def get_public_host_address(self,instance_identifier):
+    def get_public_host_address(self, instance_identifier):
         instance_list = []
         try:
             response = self.rds.describe_db_instances()
@@ -132,14 +134,13 @@ class RDSLibrary:
             response = self.rds.describe_db_snapshots()
             for snapshot in response["DBSnapshots"]:
                 snapshot_list.append(snapshot['DBSnapshotIdentifier'])
-            print (snapshot_list)
+            print(snapshot_list)
             return snapshot_list
         except Exception as error:
             print("Got exception: ", error)
             return error
 
-
-    def check_if_instance_is_running(self,instance_identifier):
+    def check_if_instance_is_running(self, instance_identifier):
         try:
             response = self.rds.describe_db_instances()
             print(response)
@@ -152,8 +153,7 @@ class RDSLibrary:
                     return True
         return False
 
-
-    def check_if_snapshot_is_available(self,snapshot_name):
+    def check_if_snapshot_is_available(self, snapshot_name):
         try:
             response = self.rds.describe_db_snapshots(
                 DBSnapshotIdentifier=snapshot_name
@@ -168,12 +168,11 @@ class RDSLibrary:
                     return True
         return False
 
-
-    def modify_instance_name(self,instance_identifier,new_instance_identifier):
+    def modify_instance_name(self, instance_identifier, new_instance_identifier):
         try:
             response = self.rds.modify_db_instance(
-                DBInstanceIdentifier = instance_identifier,
-                NewDBInstanceIdentifier = new_instance_identifier,
+                DBInstanceIdentifier=instance_identifier,
+                NewDBInstanceIdentifier=new_instance_identifier,
                 ApplyImmediately=True
             )
             print(response)
@@ -182,35 +181,36 @@ class RDSLibrary:
             error
         return False
 
-    def wait_for_instance_to_be_running(self,instance_identifier,tries=50):
+    def wait_for_instance_to_be_running(self, instance_identifier, tries=50):
         instance_running = False
         print("Starting at: ", time.localtime())
 
         while tries > 0 and not instance_running:
             if self.check_if_instance_is_running(instance_identifier):
-                print("Running at: ",time.localtime())
-                return ("Running at: ",time.localtime())
+                print("Running at: ", time.localtime())
+                return ("Running at: ", time.localtime())
             time.sleep(30)
             tries -= 1
-            print("Waiting for :", instance_identifier,"Tries :",tries)
+            print("Waiting for :", instance_identifier, "Tries :", tries)
 
-
-    def wait_for_snapshot_to_be_available(self,snapshot_name,tries=50):
+    def wait_for_snapshot_to_be_available(self, snapshot_name, tries=50):
         instance_running = False
         print("Starting at: ", time.localtime())
 
         while tries > 0 and not instance_running:
             if self.check_if_snapshot_is_available(snapshot_name):
-                print("Available at: ",time.localtime())
-                return ("Available at: ",time.localtime())
+                print("Available at: ", time.localtime())
+                return ("Available at: ", time.localtime())
             time.sleep(30)
             tries -= 1
-            print("Waiting for :", snapshot_name,"Tries :",tries)
+            print("Waiting for :", snapshot_name, "Tries :", tries)
 
 
 def main():
     rds = RDSLibrary()
     rds.list_snapshots()
+
+
 # rds.create_snapshot('robotdemo1','robotdemo1-snapshot')
 # # print(rds.build_postgres_url('hello4'))
 # rds.wait_for_snapshot_to_be_available('robotdemo1-snapshot1')
