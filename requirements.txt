@@ -1,7 +1,7 @@
 boto3
 psycopg2-binary
 SQLAlchemy
-werkzeug==0.16.0
+werkzeug==2.2.3
 robotframework
 robotframework-requests
 robotframework-seleniumlibrary
